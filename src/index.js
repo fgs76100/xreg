@@ -4,9 +4,16 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { HighlightProvider } from "./HighlightContext"
+import { TabProvider } from './TabContext';
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <HighlightProvider>
+      <TabProvider>
+        <App />
+      </TabProvider>
+    </HighlightProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

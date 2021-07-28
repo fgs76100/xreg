@@ -1,0 +1,533 @@
+{
+  "name": "root",
+  "id": 1,
+  "children": [
+    {
+      "id": 2,
+      "name": "SoC_top",
+      "children": [
+        {
+          "name": "SystemRegister",
+          "id": 3,
+          "children": [
+            {
+              "id": 100,
+              "address": "0x18002000",
+              "name": "Reset",
+              "attributes": {
+                "purpose": "lore long long long long long long long long long long long long long long long long long long long long long long long long long long long long\n\nlonglong....longlong\ner we1 2313flert werw2 3rk2oo",
+                "secure": false
+              },
+              "fields": [
+                {
+                  "bits": "31:30",
+                  "field": "MASK0112435083405",
+                  "default": "0x0",
+                  "access": "R/W",
+                  "desc": "oops 3\n1\n2\n3\n4\n5\n6\n7"
+                },
+                {
+                  "bits": "29:28",
+                  "field": "MASK1",
+                  "default": "0x0",
+                  "access": "R/W",
+                  "desc": "oops 2"
+                },
+                {
+                  "bits": "27:26",
+                  "field": "MASK2",
+                  "default": "0x0",
+                  "access": "R/W",
+                  "desc": "oops 1"
+                },
+                {
+                  "bits": "25:24",
+                  "field": "MASK3",
+                  "default": "0x0",
+                  "access": "R/W",
+                  "desc": "oops 0"
+                },
+                {
+                  "bits": 23,
+                  "field": "onebit23",
+                  "default": "0x0",
+                  "access": "R/W",
+                  "desc": ""
+                },
+                {
+                  "bits": 22,
+                  "field": "onebit22",
+                  "default": "0x0",
+                  "access": "R/W",
+                  "desc": ""
+                },
+                {
+                  "bits": "21:0",
+                  "field": "RESERVED",
+                  "default": "0x0",
+                  "access": "R/W",
+                  "desc": ""
+                }
+              ]
+            },
+            {
+              "id": 101,
+              "address": "0x18002004",
+              "name": "system_id",
+              "attributes": {
+                "purpose": "lore long long long long long long long long long long long long long long long long long long long long long long long long long long long long\n\nlonglong....longlong\ner we1 2313flert werw2 3rk2oo",
+                "purpose1": "lore long long long long long long long long long long long long long long long long long long long long long long long long long long long long\n\nlonglong....longlong\ner we1 2313flert werw2 3rk2oo",
+                "purpose2": "lore long long long long long long long long long long long long long long long long long long long long long long long long long long long long\n\nlonglong....longlong\ner we1 2313flert werw2 3rk2oo",
+                "purpose3": "lore long long long long long long long long long long long long long long long long long long long long long long long long long long long long\n\nlonglong....longlong\ner we1 2313flert werw2 3rk2oo",
+                "secure": true,
+                "exists": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quo est impedit atque perspiciatis laborum numquam voluptatibus nostrum consequatur quaerat harum accusantium, vel soluta? Dolores reprehenderit nobis corporis earum itaque perspiciatis numquam, mollitia similique aliquam at blanditiis, dignissimos voluptate consequatur consectetur reiciendis provident debitis doloremque architecto. Nostrum quae provident autem dicta."
+              },
+              "fields": [
+                {
+                  "bits": "31:16",
+                  "field": "system_id",
+                  "default": "0xbeef",
+                  "access": "RO",
+                  "desc": "system id\nUse ID to SVN"
+                },
+                {
+                  "bits": "15:0",
+                  "field": "system_date",
+                  "default": "0x1023",
+                  "access": "RO",
+                  "desc": "create date and a long long long long long long long long long long long long long long long long long long long long long long desc"
+                }
+              ]
+            },
+            {
+              "id": 1019,
+              "address": "0x18002008",
+              "name": "system_task",
+              "attributes": {
+                "purpose": "lore long long long long long long long long long long long long long long long long long long long long long long long long long long long long\n\nlonglong....longlong\ner we1 2313flert werw2 3rk2oo",
+                "purpose1": "lore long long long long long long long long long long long long long long long long long long long long long long long long long long long long\n\nlonglong....longlong\ner we1 2313flert werw2 3rk2oo",
+                "purpose2": "lore long long long long long long long long long long long long long long long long long long long long long long long long long long long long\n\nlonglong....longlong\ner we1 2313flert werw2 3rk2oo",
+                "purpose3": "lore long long long long long long long long long long long long long long long long long long long long long long long long long long long long\n\nlonglong....longlong\ner we1 2313flert werw2 3rk2oo",
+                "secure": true,
+                "exists": "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quo est impedit atque perspiciatis laborum numquam voluptatibus nostrum consequatur quaerat harum accusantium, vel soluta? Dolores reprehenderit nobis corporis earum itaque perspiciatis numquam, mollitia similique aliquam at blanditiis, dignissimos voluptate consequatur consectetur reiciendis provident debitis doloremque architecto. Nostrum quae provident autem dicta."
+              },
+              "fields": [
+                {
+                  "bits": 31,
+                  "field": "system_id0",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 30,
+                  "field": "system_id1",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 29,
+                  "field": "system_id2",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 28,
+                  "field": "system_id3",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 27,
+                  "field": "system_id4",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 26,
+                  "field": "system_id5",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 25,
+                  "field": "system_id6",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 24,
+                  "field": "system_id7",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 23,
+                  "field": "system_id8",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 22,
+                  "field": "system_id9",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 21,
+                  "field": "system_id10",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 20,
+                  "field": "system_id11",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 19,
+                  "field": "system_id12",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 18,
+                  "field": "system_id13",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 17,
+                  "field": "system_id14",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 16,
+                  "field": "system_id15",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 15,
+                  "field": "system_id16",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 14,
+                  "field": "system_id17",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 13,
+                  "field": "system_id18",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 12,
+                  "field": "system_id19",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 11,
+                  "field": "system_id20",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 10,
+                  "field": "system_id21",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 9,
+                  "field": "system_id22",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 8,
+                  "field": "system_id23",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 7,
+                  "field": "system_id24",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 6,
+                  "field": "system_id25",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 5,
+                  "field": "system_id26",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 4,
+                  "field": "system_id27",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 3,
+                  "field": "system_id28",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 2,
+                  "field": "system_id29",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 1,
+                  "field": "system_id30",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                },
+                {
+                  "bits": 0,
+                  "field": "system_id31",
+                  "default": "0x0",
+                  "access": "RO",
+                  "desc": "0x0: system task was finished\n0x1: system tark still running"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "UART",
+          "id": 10,
+          "children": [
+            {
+              "name": "uart0",
+              "id": 11,
+              "children": [
+                {
+                  "id": 102,
+                  "address": "0x18001000",
+                  "name": "RATE",
+                  "fields": []
+                }
+              ]
+            },
+            {
+              "name": "uart1",
+              "id": 12,
+              "children": [
+                {
+                  "id": 103,
+                  "address": "0x18002000",
+                  "name": "RATE",
+                  "fields": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "HS_block",
+          "id": 4,
+          "children": [
+            {
+              "name": "DDRC",
+              "id": 5,
+              "children": [
+                {
+                  "id": 104,
+                  "address": "0x18142000",
+                  "name": "PLL control",
+                  "fields": []
+                },
+                {
+                  "id": 1025,
+                  "address": "0x18142004",
+                  "name": "MISC",
+                  "fields": []
+                },
+                {
+                  "id": 1035,
+                  "address": "0x18142004",
+                  "name": "MR0",
+                  "fields": []
+                },
+                {
+                  "id": 1045,
+                  "address": "0x18142004",
+                  "name": "MR1",
+                  "fields": []
+                },
+                {
+                  "id": 1055,
+                  "address": "0x18142004",
+                  "name": "MR2",
+                  "fields": []
+                },
+                {
+                  "id": 1065,
+                  "address": "0x18142004",
+                  "name": "MR3",
+                  "fields": []
+                },
+                {
+                  "id": 1075,
+                  "address": "0x18142004",
+                  "name": "MR4",
+                  "fields": []
+                },
+                {
+                  "id": 1085,
+                  "address": "0x18142004",
+                  "name": "MR5",
+                  "fields": []
+                },
+                {
+                  "id": 1095,
+                  "address": "0x18142004",
+                  "name": "MR6",
+                  "fields": []
+                },
+                {
+                  "id": 10105,
+                  "address": "0x18142004",
+                  "name": "MR7",
+                  "fields": []
+                },
+                {
+                  "id": 10115,
+                  "address": "0x18142004",
+                  "name": "MR8",
+                  "fields": []
+                },
+                {
+                  "id": 10125,
+                  "address": "0x18142004",
+                  "name": "MR9",
+                  "fields": []
+                }
+              ]
+            },
+            {
+              "name": "SPIC_NOR",
+              "id": 6,
+              "children": [
+                {
+                  "id": 116,
+                  "address": "0x18143000",
+                  "name": "MISC",
+                  "fields": []
+                },
+                {
+                  "id": 126,
+                  "address": "0x18143004",
+                  "name": "clock control",
+                  "fields": []
+                }
+              ]
+            },
+            {
+              "name": "NIC-400",
+              "id": 7,
+              "children": [
+                {
+                  "id": 136,
+                  "address": "0x18144000",
+                  "name": "OSTD control",
+                  "fields": []
+                },
+                {
+                  "id": 146,
+                  "address": "0x18144004",
+                  "name": "peak rate",
+                  "fields": []
+                },
+                {
+                  "id": 137,
+                  "address": "0x18144008",
+                  "name": "OSTD ratio control register",
+                  "fields": []
+                }
+              ]
+            },
+            {
+              "name": "cpu_core",
+              "id": 1231,
+              "children": [
+                {
+                  "id": 1232,
+                  "address": "0x18002000",
+                  "name": "cpu_core0",
+                  "children": [
+                    {
+                      "id": 12320,
+                      "address": "0x18003000",
+                      "name": "cpu_core0_thread0",
+                      "children": []
+                    },
+                    {
+                      "id": 12321,
+                      "address": "0x18004000",
+                      "name": "cpu_core0_thread1",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": 12329,
+                  "address": "0x18903000",
+                  "name": "cpu_core1",
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
