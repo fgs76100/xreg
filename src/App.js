@@ -28,19 +28,16 @@ const useStyles = makeStyles(theme => ({
     flexShrink: 0,  // so sidebar can be overflow the container
   },
   tabView: {
-    marginLeft: "10px",
+    marginLeft: "20px",
     flexGrow: 1,
     maxWidth: "960px",
     overflowY: "auto",
   },
-
   floatButton: {
-    position: "fixed",
     bottom: "50vh",
-    // bottom: "20px",
-    right: "20px",
+    position: 'fixed',
+    transform: "translateX(-80%)",
   }
-
 }));
 
 
@@ -74,7 +71,6 @@ function App() {
 
         setTree(excelReader.root)
       } catch (error) {
-        console.log(error)
         alert("Error: failed to parse the excel")
       }
     }
@@ -95,16 +91,16 @@ function App() {
         </Paper>
         <Paper className={classes.tabView} id="tabView" onScroll={onScroll}>
           <TabView></TabView>
+          <div hidden={hideFab}>
+            <Fab
+              onClick={backToTop}
+              className={classes.floatButton} size="medium" color="primary">
+              <ExpandLessIcon />
+            </Fab>
+          </div>
         </Paper>
       </div >
 
-      <div hidden={hideFab}>
-        <Fab
-          onClick={backToTop}
-          className={classes.floatButton} size="medium" color="primary">
-          <ExpandLessIcon />
-        </Fab>
-      </div>
     </div >
   );
 }

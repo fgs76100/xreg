@@ -25,9 +25,7 @@ function tabReducer(state, action) {
                 // if tab was already opened, just change it to current tab
                 // state.openedTabs[index] = [...state.openedTabs]
                 state.openedTabs[index] = tab
-                // console.log("yes")
                 return { ...state, currentTabID: tab.id, currentTab: tab, target }
-                // return state
             }
             return {
                 target,

@@ -286,11 +286,7 @@ class ExcelReader {
 // const excel = new ExcelBase()
 // excel.readFile('RLE0947_SoC_RegisterFile.xls')
 // excel.getChildren()
-// console.log(excel.root)
 // excel.readChipIndex()
-// console.log(excel.root)
 // const node = createNode('mod_SYS_REG.xml')
-// console.log(JSON.stringify(excel.createLeaf('file_SYS_REG.xml'), null, 2))
-// console.log(excel.createLeaf('file_SYS_REG.xml'))
 
 export default ExcelReader

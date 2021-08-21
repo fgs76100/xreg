@@ -243,7 +243,6 @@ const FieldTable = ({ Head, Cell, parent, fields }) => {
 
 
 const FieldView = ({ parent, fields, bitWidth }) => {
-    console.log("View")
     let id = `${parent.id}-${createID()}`
     const decoderRef = useRef({ [id]: [], })
     const regValueRef = useRef({

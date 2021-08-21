@@ -41,7 +41,7 @@ export const scrollTo = (node, id, option = null) => {
     }
     let el = document.getElementById(id)
     if (el) el.scrollIntoView(option)
-    else console.log(`${id} not found`)
+    else throw Error(`${id} not found`)
 }
 
 
@@ -188,21 +188,21 @@ export const Highlighter = ({ text = '', highlight = '', caseSensitive }) => {
 
 
 
-export function useTraceUpdate(props) {
-    const prev = useRef(props);
-    useEffect(() => {
-        const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
-            if (prev.current[k] !== v) {
-                ps[k] = [prev.current[k], v];
-            }
-            return ps;
-        }, {});
-        if (Object.keys(changedProps).length > 0) {
-            console.log('Changed props:', changedProps);
-        }
-        prev.current = props;
-    });
-}
+// export function useTraceUpdate(props) {
+//     const prev = useRef(props);
+//     useEffect(() => {
+//         const changedProps = Object.entries(props).reduce((ps, [k, v]) => {
+//             if (prev.current[k] !== v) {
+//                 ps[k] = [prev.current[k], v];
+//             }
+//             return ps;
+//         }, {});
+//         if (Object.keys(changedProps).length > 0) {
+//             console.log('Changed props:', changedProps);
+//         }
+//         prev.current = props;
+//     });
+// }
 
 
 export const joinHier = (node, sep = '/') => {
@@ -235,21 +235,3 @@ export function* iterGetParents(node) {
         }
     }
 }
-
-// export const findNodeByName = (node, name) => {
-
-//     console.log(node)
-//     if (node?.name === name) {
-//         return node
-//     }
-
-//     if (node?.children) {
-
-//         for (const child of node.children) {
-//             const isMatch = findNodeByName(child, name)
-//             if (isMatch !== undefined) return child
-//         }
-//     }
-
-//     return undefined
-// }

@@ -213,7 +213,6 @@ function* iterLeaf(node, query, showParent = true, parent = null) {
 
 // const outerElementType = forwardRef((props, ref) => {
 //     const onClick = (e) => {
-//         console.log(e)
 //     }
 //     return <div ref={ref} onClick={onClick} nice="123" {...props} />
 // });
@@ -260,16 +259,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SearchView = (props) => {
-    // const highlight = ""
-    // const setHighlight = () => (1)
-    // console.log(caseSensitive)
     const classes = useStyles()
 
     const [showParent, setShowParent] = useState(true)
     const { highlight, caseSensitive } = useHighlight()
     const { tree, parents, handleChange } = props
 
-    console.log("search view render")
     const nodes = useMemo(() => {
         // TODO: imporve this with previous state(useRef)
         if (!highlight) return []

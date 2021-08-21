@@ -133,7 +133,6 @@ export default function Sidebar(props) {
     };
 
     const handleChange = (event, newValue) => {
-        console.log(showContent)
         if (!showContent) {
             setDrawerWidth(defaultDrawerWidth)
             setShowContent(true)
