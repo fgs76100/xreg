@@ -64,12 +64,8 @@ function App() {
     fileReader.onload = e => {
       try {
         // eslint-disable-next-line no-unused-vars
-        // var oFile = excelReader.readData(e.target.result, { type: 'binary' })
-        excelReader.readData(e.target.result, { type: 'binary' })
-        excelReader.getChildren()
-        excelReader.root.name = excelReader.root.headpage
-
-        setTree(excelReader.root)
+        const root = excelReader.createTree(e.target.result, { type: 'binary' })
+        setTree(root)
       } catch (error) {
         alert("Error: failed to parse the excel")
       }

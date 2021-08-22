@@ -45,7 +45,10 @@ function tabReducer(state, action) {
                 if (state.currentTabID === id) {
                     currentTabID = NO_SELECT;
                     currentTab = undefined;
-                    window.history.pushState(null, "", "/");
+
+                    if (window.location.protocol !== "file:") {
+                        window.history.pushState(null, "", "/");
+                    }
                 } else {
                     currentTabID = state.currentTabID;
                     currentTab = tab;

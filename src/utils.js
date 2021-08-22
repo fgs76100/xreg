@@ -36,7 +36,10 @@ export const scrollTo = (node, id, option = null) => {
             // pathname: window.location.pathname
             node,
         }
-        window.history.pushState(current_page_state, "", hash)
+
+        if (window.location.protocol !== "file:") {
+            window.history.pushState(current_page_state, "", hash)
+        }
         window.location.replace(hash)  // trigger css :target
     }
     let el = document.getElementById(id)
@@ -45,7 +48,7 @@ export const scrollTo = (node, id, option = null) => {
 }
 
 
-export const binaryToHex = (bin) => parseInt(bin, 2).toString(16)
+export const binaryToHex = (bin) => parseInt(bin, 2).toString(16).toUpperCase()
 
 export const binaryTo = (value, format = HEX) => {
     if (format === HEX) return `0x${binaryToHex(value)}`
@@ -212,15 +215,18 @@ export const joinHier = (node, sep = '/') => {
 
 
 export const setHistoryState = (node, hash = "") => {
-    window.history.pushState(
-        {
-            node,
-            type: "tab"
-        },
-        "",
-        `/${joinHier(node)}${hash}`,
-    )
-    // if (hash) window.location.replace(hash)  // trigger css :target
+    if (window.location.protocol !== "file:") {
+
+        window.history.pushState(
+            {
+                node,
+                type: "tab"
+            },
+            "",
+            `/${joinHier(node)}${hash}`,
+        )
+        // if (hash) window.location.replace(hash)  // trigger css :target
+    }
 }
 
 export const getParents = (node) => {

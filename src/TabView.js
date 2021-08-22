@@ -46,25 +46,29 @@ TabPanel.propTypes = {
 
 const useTabStyles = makeStyles((theme) => ({
   tab: {
-    minWidth: "30px",
-    padding: "0 4px",
-    margin: "0 4px",
+    minWidth: "5ch",
     '&:hover': {
       backgroundColor: theme.palette.action.hover,
     },
-
   },
   tabLabel: {
     '&:hover': {
       backgroundColor: "transparent",
     },
+    display: "inline-flex",
+    justifyContent: "flex-start",
+  },
+  wrapper: {
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
   closeButton: {
     '&:hover': {
       color: theme.palette.secondary.main,
-    }
+    },
   },
-
 }));
 
 const RemoveableTab = ({ label, onDelete, value, ...rest }) => {
@@ -77,14 +81,17 @@ const RemoveableTab = ({ label, onDelete, value, ...rest }) => {
       component="span"
       disableRipple
       starticon={<Close />}
+      classes={{
+        wrapper: classes.wrapper
+      }}
       label={
         <Button
           disableElevation
           disableRipple
           className={classes.tabLabel}
-          // endIcon={
           startIcon={
             <Close
+              size="small"
               className={classes.closeButton}
               onClick={(e) => (onDelete(e, value))}
             />}

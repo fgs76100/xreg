@@ -36,13 +36,10 @@ const useNodeStyles = makeStyles(theme => ({
         }
     },
     node: {
-        // fontSize: theme.typography.fontSize,
         display: "inline-block",
         overflow: "hidden",
         whiteSpace: "nowrap",
-        // textAlign: "right",
         textOverflow: "ellipsis",
-        // direction: "rtl",
         marginRight: "1rem"
     }
 }));

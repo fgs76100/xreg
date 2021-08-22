@@ -6,16 +6,23 @@ class ExcelReader {
         this.cfg = cfg || {}
         this.hasChipIndex = false
         this.root = {
-            headpage: '',
+            headpage: 'root',
             prefix: '',
             pprange: '',
-            name: '',
+            name: 'root',
             id: `root_${this.createID()}`,
             data_mux_file: [],
             memory_block: [],
             revisions: [],
             children: []
         }
+    }
+
+    createTree(data, cfg) {
+        this.readData(data, cfg)
+        this.getChildren()
+        this.root.name = this.root.headpage
+        return this.root
     }
 
     readFile(filename) {
@@ -146,19 +153,26 @@ class ExcelReader {
                 if ($rowIndex === 'reg_file') {
                     stage = 'DATA_MUX'
                 }
-            } else {
+            } else if (stage === 'DATA_MUX') {
                 let child = (row.B || '').trim()
                 if (child.toLowerCase().startsWith('file_')) {
                     child = this.createLeaf(child)
                 } else if (child.toLowerCase().startsWith('mode_')) {
                     child = this.createNode(child)
                 } else {
-                    child = undefined
+                    throw Error(
+                        `Not a valid name: ${child}, expecting string startswith 'file_' or 'mode_'`
+                    )
                 }
                 if (child) node.children.push(child)
+            } else {
+                throw Error(
+                    `Fatal Error: this stage "${stage}" should not exist.`
+                )
             }
         })
         node.id = `${node.name}_${this.createID()}`
+        if (node.children.length === 1) return node.children[0]
         return node
     }
 
@@ -168,6 +182,8 @@ class ExcelReader {
 
         const is_node = (sheet[0].A || '').trim().toUpperCase() === 'DATA_MUX'
         if (is_node) {
+            // TODO: should raise Error here?
+            // you expecting a leaf, but got a parent instead
             return this.createNode(sheetName)
         }
 
@@ -206,14 +222,14 @@ class ExcelReader {
                 if ($rowIndex === 'register') {
                     stage = 'REGISTER'
                     offset = this.hasChipIndex
-                        ? this.getBaseAddress(leaf.name)
+                        ? this.getBaseAddress(sheetName)
                         : leaf.abstract || '0x0'
                     leaf.baseAddress = offset
                     offset = parseInt(offset, 16)
                     if (!offset) offset = 0
                     wait = 1
                 }
-            } else {
+            } else if (stage === 'REGISTER') {
                 if (wait) {
                     // to skip header
                     wait--
@@ -230,6 +246,10 @@ class ExcelReader {
                 ) {
                     leaf.children.push(register)
                 }
+            } else {
+                throw Error(
+                    `Fatal Error: this stage "${stage}" should not exist.`
+                )
             }
         })
         leaf.id = `${leaf.name}_${this.createID()}`
@@ -266,9 +286,11 @@ class ExcelReader {
         })
     }
 
-    getBaseAddress(leafName) {
-        const block = this.root.memory_block.find(block => block.name === leafName)
+    getBaseAddress(sheetName) {
+        let name = sheetName.replace("file_", "").replace(".xml", "")
+        const block = this.root.memory_block.find(block => block.name === name)
         if (!block) {
+            console.log(`${sheetName}(${name}) not found`)
             return '0x0'
         } else {
             return block.baseAddress || '0x0'
