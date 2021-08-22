@@ -5,6 +5,7 @@ const replace = require("gulp-replace");
 gulp.task("default", () => {
   return gulp
     .src("./build/*.html")
+    .pipe(replace('/RegisterDashboard', ''))
     .pipe(replace('.js"></script>', '.js" inline></script>'))
     .pipe(replace('rel="stylesheet">', 'rel="stylesheet" inline>'))
     .pipe(
@@ -13,5 +14,5 @@ gulp.task("default", () => {
         ignore: ["png"],
       })
     )
-    .pipe(gulp.dest("./build"));
+    .pipe(gulp.dest("./inlinehtml"));
 });

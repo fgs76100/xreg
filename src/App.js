@@ -10,6 +10,7 @@ import data from "./data/data.json"
 import ExcelReader from './FileHandler/ExcelReader';
 import Fab from '@material-ui/core/Fab';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import { setParent } from './utils';
 
 const useStyles = makeStyles(theme => ({
   // root: {
@@ -50,7 +51,7 @@ const backToTop = () => {
 function App() {
   const classes = useStyles()
   // const [selected, setSelected] = useState([]);
-  const [tree, setTree] = useState(data)
+  const [tree, setTree] = useState(setParent(data))
   const [hideFab, setHideFab] = useState(true)
 
   const handleUpload = useCallback((e) => {
@@ -65,7 +66,7 @@ function App() {
       try {
         // eslint-disable-next-line no-unused-vars
         const root = excelReader.createTree(e.target.result, { type: 'binary' })
-        setTree(root)
+        setTree(setParent(root))
       } catch (error) {
         alert("Error: failed to parse the excel")
       }

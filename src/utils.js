@@ -229,9 +229,6 @@ export const setHistoryState = (node, hash = "") => {
     }
 }
 
-export const getParents = (node) => {
-}
-
 export function* iterGetParents(node) {
     // if (!node) return
     if (node?.children) {
@@ -240,4 +237,14 @@ export function* iterGetParents(node) {
             yield* iterGetParents(child)
         }
     }
+}
+
+export const setParent = (node, parent = null) => {
+    node.parent = parent
+    if (node?.children) {
+        for (const child of node.children) {
+            setParent(child, node)
+        }
+    }
+    return node
 }

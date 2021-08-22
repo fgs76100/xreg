@@ -157,8 +157,6 @@ const Node = ({ data: { isLeaf, nestingLevel, ...node }, isOpen, style, toggle }
 };
 
 function* iterLeaf(node, query, showParent = true, parent = null) {
-    node.parent = parent
-
     if (node.hasOwnProperty("children")) {
         for (const child of node.children) {
             yield* iterLeaf(child, query, showParent, node)

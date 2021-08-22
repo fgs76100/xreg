@@ -46,14 +46,12 @@ function* _treeWalker(root, refresh) {
     stack.push({
         nestingLevel: 0,
         node: root,
-        parent: null,
     });
 
     // Walk through the tree until we have no nodes available.
     while (stack.length !== 0) {
         const {
             node: { children = [], id, ...other },
-            parent,
             nestingLevel,
         } = stack.pop();
 
@@ -69,7 +67,6 @@ function* _treeWalker(root, refresh) {
             isLeaf: children.length === 0,
             nestingLevel,
             children,
-            parent,
             isOpenByDefault: nestingLevel < 1,
             // isOpenByDefault: nestingLevel < 2,
         }
@@ -88,7 +85,6 @@ function* _treeWalker(root, refresh) {
                 stack.push({
                     nestingLevel: nestingLevel + 1,
                     node: children[i],
-                    parent: node,
                 });
             }
         }

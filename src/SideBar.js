@@ -155,6 +155,31 @@ export default function Sidebar(props) {
 
     const parents = useMemo(() => [...iterGetParents(tree)], [tree])
 
+    useEffect(() => {
+        let pathname = window.location.pathname
+        if (pathname.startsWith(`/${treeRoot.name}`)) {
+            const target = window.location.hash.replace("#", "")
+            const scopes = pathname.split("/")
+            let nodes = [treeRoot]
+            let node = null
+            for (const scope of scopes) {
+                if (scope !== "") {
+                    node = nodes.find(item => item.name === scope)
+                    if (!node) break
+                    nodes = node.children
+                }
+            }
+            if (node) {
+                dispatch({
+                    type: 'addOpenedTab',
+                    payload: { tab: node, setHistory: false, target }
+                })
+            }
+        }
+    },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [])
+
     return (
         <div className={classes.root} style={{ width: drawerWidth }}>
             <Tabs
