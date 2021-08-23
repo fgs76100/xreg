@@ -66,15 +66,14 @@ const useStyles = makeStyles((theme) => ({
     },
     dragger: {
         width: "5px",
-        cursor: "ew-resize",
+        cursor: "col-resize",
         padding: "4px 0 0",
-        borderTop: "1px solid #ddd",
         position: "absolute",
         top: 0,
-        right: 0,
+        right: -5,
         bottom: 0,
         zIndex: 100,
-        // backgroundColor: "#f4f7f9",
+        // backgroundColor: "transparent",
         '&:hover': {
             background: theme.palette.action.active
         },

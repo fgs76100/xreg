@@ -5,12 +5,15 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import SideBar from './SideBar';
 import TabView from './TabView';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import data from "./data/data.json"
 import ExcelReader from './FileHandler/ExcelReader';
 import Fab from '@material-ui/core/Fab';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { setParent } from './utils';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import { green, red, } from '@material-ui/core/colors';
 
 const useStyles = makeStyles(theme => ({
   // root: {
@@ -64,8 +67,13 @@ function App() {
 
     fileReader.onload = e => {
       try {
-        // eslint-disable-next-line no-unused-vars
-        const root = excelReader.createTree(e.target.result, { type: 'binary' })
+        let root;
+        if (file.type === "application/json") {
+          root = JSON.parse(e.target.result)
+
+        } else {
+          root = excelReader.createTree(e.target.result, { type: 'binary' })
+        }
         setTree(setParent(root))
       } catch (error) {
         alert("Error: failed to parse the excel")
@@ -79,26 +87,49 @@ function App() {
     else setHideFab(true)
   }, [])
 
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          type: prefersDarkMode ? 'dark' : 'light',
+          primary: {
+            main: prefersDarkMode ? green[200] : "#3f51b5"
+            // main: prefersDarkMode ? "#f48fb1" : "#3f51b5" // nice too
+          },
+          secondary: {
+            main: prefersDarkMode ? red['A100'] : "#f50057"
+          }
+        },
+      }),
+    [prefersDarkMode],
+  );
+
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <div className={classes.main}>
-        <Paper className={classes.sideBar}>
-          <SideBar tree={tree} onUpload={handleUpload}></SideBar>
-        </Paper>
-        <Paper className={classes.tabView} id="tabView" onScroll={onScroll}>
-          <TabView></TabView>
-          <div hidden={hideFab}>
-            <Fab
-              onClick={backToTop}
-              className={classes.floatButton} size="medium" color="primary">
-              <ExpandLessIcon />
-            </Fab>
-          </div>
-        </Paper>
+    <ThemeProvider theme={theme}>
+
+      <div className={classes.root}>
+        <CssBaseline />
+        <div className={classes.main}>
+          <Paper className={classes.sideBar}>
+            <SideBar tree={tree} onUpload={handleUpload}></SideBar>
+          </Paper>
+          <Paper className={classes.tabView} id="tabView" onScroll={onScroll}>
+            <TabView></TabView>
+            <div hidden={hideFab}>
+              <Fab
+                onClick={backToTop}
+                className={classes.floatButton} size="medium" color="primary">
+                <ExpandLessIcon />
+              </Fab>
+            </div>
+          </Paper>
+        </div >
+
       </div >
 
-    </div >
+    </ThemeProvider>
   );
 }
 

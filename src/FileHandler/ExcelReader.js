@@ -212,32 +212,43 @@ class ExcelReader {
         let register = undefined
         let offset = 0
         let wait = 1
+        let baseAddr = 0
         const addressWidth = Math.ceil((this.cfg.addressWidth || 32) / 4)
         // let slice_cnt = 0
         // const slice = []
         sheet.forEach(row => {
+            if (wait) {
+                // to skip header
+                wait--
+                return
+            }
             const $rowIndex = (row.A || '').trim().toLowerCase()
             if (stage === 'attribute') {
                 if (leaf.hasOwnProperty($rowIndex)) leaf[$rowIndex] = row.B || ''
-                if ($rowIndex === 'register') {
+                if ($rowIndex === 'register' || $rowIndex === "table") {
                     stage = 'REGISTER'
-                    offset = this.hasChipIndex
-                        ? this.getBaseAddress(sheetName)
-                        : leaf.abstract || '0x0'
-                    leaf.baseAddress = offset
-                    offset = parseInt(offset, 16)
-                    if (!offset) offset = 0
                     wait = 1
                 }
             } else if (stage === 'REGISTER') {
-                if (wait) {
-                    // to skip header
-                    wait--
+                if ($rowIndex === 'register' || $rowIndex === "table") {
+                    stage = 'REGISTER'
+                    wait = 1
                     return
                 }
                 // if first column exists, then must have a new register
-                if (row.A)
-                    [register, offset] = this.createRegister(row, offset, addressWidth)
+                if (row.A) {
+                    if (row.I) {
+                        // get base address by memory block
+                        baseAddr = this.getBaseAddress(row.I, leaf, row)
+                    } else {
+                        // otherwise, using leaf.name instead
+                        baseAddr = this.getBaseAddress(leaf.name, leaf, row)
+                    }
+                    if (leaf.baseAddress === "") {
+                        leaf.baseAddress = baseAddr
+                    }
+                    [register, offset] = this.createRegister(row, baseAddr, offset, addressWidth)
+                }
                 this.registerAddField(register, row)
                 // if LSB === 0 then push
                 if (
@@ -256,13 +267,14 @@ class ExcelReader {
         return leaf
     }
 
-    createRegister(row, offset, addressWidth = 8) {
+    createRegister(row, baseAddr, offset, addressWidth = 8) {
         let name = row.B
         const register = {
             id: `${name}_${this.createID()}`,
             public: row.A,
             name: name,
-            address: `0x${offset.toString(16).padStart(addressWidth, 0)}`,
+            address: `0x${(offset + baseAddr).toString(16).padStart(addressWidth, 0)}`,
+            offset: `0x${(offset).toString(16).padStart(4, 0)}`,
             desc: row.J,
             fields: []
         }
@@ -286,15 +298,24 @@ class ExcelReader {
         })
     }
 
-    getBaseAddress(sheetName) {
-        let name = sheetName.replace("file_", "").replace(".xml", "")
-        const block = this.root.memory_block.find(block => block.name === name)
-        if (!block) {
-            console.log(`${sheetName}(${name}) not found`)
-            return '0x0'
+    getBaseAddress(name, leaf, row) {
+
+        let baseAddr = "0x0"
+        if (!this.hasChipIndex) {
+            baseAddr = leaf.abstract || '0x0'
         } else {
-            return block.baseAddress || '0x0'
+            const block = this.root.memory_block.find(block => block.name === name)
+            if (!block) {
+                console.log(`${name} not found in memory block (${leaf.name})`)
+                console.log(row)
+            } else {
+                baseAddr = block.baseAddress || '0x0'
+            }
         }
+
+        baseAddr = parseInt(baseAddr, 16)
+        if (!baseAddr) baseAddr = 0
+        return baseAddr
     }
 
     createID() {
