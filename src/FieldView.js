@@ -16,12 +16,11 @@ import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { memo, useCallback, useRef, useState, forwardRef } from "react";
 import {
-    debounce, scrollTo, BITS, RESET, RegValue, HEX, DECIMAL,
-    NAME, DESC, ACCESS, Highlighter, RESERVED, createID
+    debounce, scrollToID, BITS, RESET, RegValue, HEX, DECIMAL,
+    NAME, DESC, ACCESS, RESERVED, createID
 } from './utils';
-import { useHighlight } from "./HighlightContext";
-// import Tooltip from '@material-ui/core/Tooltip';
 import AddBoxIcon from '@material-ui/icons/AddBox';
+import Highlighter from "./Highlighter";
 
 const ENCODER = "-1"
 
@@ -33,15 +32,15 @@ const headers = [
 ]
 
 const useAnchorStyles = makeStyles((theme) => ({
-    anchor: {
-        "&:target": {
+    desc: {
+        "& .anchor-acitve": {
             backgroundColor: theme.palette.action.focus,
-        },
+            // text: theme.palette.text.hint
+        }
     },
 }))
 
 const FieldsDesc = memo(({ regID, fields }) => {
-    const { highlight, caseSensitive } = useHighlight()
     const classes = useAnchorStyles()
     const FieldDesc = ({ field }) => (
         !RESERVED.test(field[NAME]) &&
@@ -52,9 +51,7 @@ const FieldsDesc = memo(({ regID, fields }) => {
                 className={classes.anchor}
                 gutterBottom
             >
-                <Highlighter
-                    caseSensitive={caseSensitive}
-                    text={`[${field[BITS]}] ${field[NAME]}`} highlight={highlight} />
+                <Highlighter text={`[${field[BITS]}] ${field[NAME]}`} />
             </Typography>
             <Typography variant="body1" gutterBottom
                 color="textSecondary"
@@ -68,9 +65,7 @@ const FieldsDesc = memo(({ regID, fields }) => {
                 fontSize="body1.fontSize"
                 whiteSpace="pre-wrap"
             >
-                <Highlighter
-                    caseSensitive={caseSensitive}
-                    text={field[DESC]} highlight={highlight} />
+                <Highlighter text={field[DESC]} />
             </Box>}
         </Box>
     )
@@ -179,8 +174,8 @@ const FieldDecoder = forwardRef((props, ref) => {
 
 
 const FieldTableRow = ({ regID, parent, field, children }) => {
-    const { highlight, caseSensitive } = useHighlight()
     let isValidName = !RESERVED.test(field[NAME])
+
     return (
         <TableRow>
             {headers.map((header) => (
@@ -189,16 +184,14 @@ const FieldTableRow = ({ regID, parent, field, children }) => {
                         header === NAME && isValidName ?
                             <Link
                                 onClick={
-                                    () => scrollTo(
+                                    () => scrollToID(
                                         parent,
                                         `${regID}-${field[NAME]}-${field[BITS]}-desc`,
                                         { block: "center" }
                                     )
                                 }
                             >
-                                <Highlighter
-                                    caseSensitive={caseSensitive}
-                                    text={field[header]} highlight={highlight} />
+                                <Highlighter text={field[header]} />
                             </Link> :
                             `${field[header]}`
                     }

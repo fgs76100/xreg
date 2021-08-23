@@ -12,6 +12,7 @@ import Tab from '@material-ui/core/Tab';
 import SearchView from './SearchView';
 import { useTab } from './TabContext';
 import { iterGetParents } from './utils';
+import { useHighlight } from './HighlightContext';
 
 
 function TabPanel(props) {
@@ -99,6 +100,7 @@ export default function Sidebar(props) {
     const { dispatch } = useTab();
     const [treeRoot, setTreeRoot] = useState(tree)
     const [showContent, setShowContent] = useState(true)
+    const { setEnableHighlight } = useHighlight()
 
     useEffect(() => {
         setTreeRoot(tree)
@@ -137,6 +139,7 @@ export default function Sidebar(props) {
             setShowContent(true)
         }
         setValue(newValue);
+        setEnableHighlight(newValue === 1)
     };
 
     others.onClick = useCallback((e, node, fieldID = null) => {
@@ -155,24 +158,27 @@ export default function Sidebar(props) {
     const parents = useMemo(() => [...iterGetParents(tree)], [tree])
 
     useEffect(() => {
-        let pathname = window.location.pathname
-        if (pathname.startsWith(`/${treeRoot.name}`)) {
-            const target = window.location.hash.replace("#", "")
-            const scopes = pathname.split("/")
-            let nodes = [treeRoot]
-            let node = null
-            for (const scope of scopes) {
-                if (scope !== "") {
-                    node = nodes.find(item => item.name === scope)
-                    if (!node) break
-                    nodes = node.children
+        // Use Hash route
+        const [pathname, target] = window.location.hash.split("#").slice(1)
+        if (pathname) {
+            const scopes = pathname.split("/").slice(1)
+
+            if (scopes.length) {
+                let nodes = [treeRoot]
+                let node = null
+                for (const scope of scopes) {
+                    if (scope !== "") {
+                        node = nodes.find(item => item.name === scope)
+                        if (!node) break
+                        nodes = node.children
+                    }
                 }
-            }
-            if (node) {
-                dispatch({
-                    type: 'addOpenedTab',
-                    payload: { tab: node, setHistory: false, target }
-                })
+                if (node) {
+                    dispatch({
+                        type: 'addOpenedTab',
+                        payload: { tab: node, setHistory: false, target }
+                    })
+                }
             }
         }
     },

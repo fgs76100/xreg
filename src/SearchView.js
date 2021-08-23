@@ -8,13 +8,14 @@ import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { useHighlight } from './HighlightContext';
-import { debounce, NAME, DESC, createID, FIEDLS, Highlighter, BITS, RESERVED } from './utils';
+import { debounce, NAME, DESC, createID, FIEDLS, BITS, RESERVED } from './utils';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import FontDownloadOutlinedIcon from '@material-ui/icons/FontDownloadOutlined';
 import FontDownloadIcon from '@material-ui/icons/FontDownload';
 import { RootSelector } from "./RootSelector"
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Highlighter from "./Highlighter";
 var escapeRegExp = require('lodash.escaperegexp');
 
 
@@ -126,7 +127,6 @@ function* _treeWalker(tree, refresh) {
 const expandIconSize = 30
 
 const Node = ({ data: { isLeaf, nestingLevel, ...node }, isOpen, style, toggle }) => {
-    const { highlight, caseSensitive } = useHighlight()
     const classes = useNodeStyles();
     const toggleCB = (e) => {
         e.preventDefault()
@@ -150,7 +150,7 @@ const Node = ({ data: { isLeaf, nestingLevel, ...node }, isOpen, style, toggle }
             )}
             {/* <div>{name}</div> */}
             <div className={classes.node} >
-                <Highlighter text={node.text} highlight={highlight} caseSensitive={caseSensitive} />
+                <Highlighter text={node.text} />
             </div>
         </div >
     )

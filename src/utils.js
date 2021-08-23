@@ -1,7 +1,6 @@
 import { useRef, useEffect } from "react"
 
-var escapeRegExp = require('lodash.escaperegexp');
-
+export const anchorActiveClass = "anchor-acitve"
 export const BITS = "bits"
 export const RESET = "default"
 export const HEX = "H"
@@ -11,6 +10,7 @@ export const DESC = "desc"
 export const ACCESS = "access"
 export const FIEDLS = "fields"
 export const RESERVED = new RegExp("reserved", "i")
+export const HOMEPAGE = "#"
 
 export const debounce = (fn, delay = 300) => {
     var timer = null;
@@ -25,9 +25,11 @@ export const debounce = (fn, delay = 300) => {
 }
 
 
-export const scrollTo = (node, id, option = null) => {
+
+export const scrollToID = (node, id, option = null) => {
     // https://stackoverflow.com/questions/824349/how-do-i-modify-the-url-without-reloading-the-page
-    let hash = `#${id}`
+    let hash = `${HOMEPAGE}/${joinHier(node)}#${id}`
+
     // prevent from registering same hash again
     if (window.location.hash !== hash) {
         let current_page_state = {
@@ -37,13 +39,16 @@ export const scrollTo = (node, id, option = null) => {
             node,
         }
 
-        if (window.location.protocol !== "file:") {
-            window.history.pushState(current_page_state, "", hash)
-        }
-        window.location.replace(hash)  // trigger css :target
+        window.history.pushState(current_page_state, "", hash)
     }
     let el = document.getElementById(id)
-    if (el) el.scrollIntoView(option)
+    if (el) {
+        document.querySelectorAll(`.${anchorActiveClass}`).forEach(
+            el => el.classList.remove(anchorActiveClass)
+        )
+        el.scrollIntoView(option)
+        el.classList.add(anchorActiveClass)
+    }
     else throw Error(`${id} not found`)
 }
 
@@ -173,21 +178,6 @@ export const usePrevious = (value) => {
     return ref.current;
 }
 
-export const Highlighter = ({ text = '', highlight = '', caseSensitive }) => {
-    if (!highlight.trim()) {
-        return <span>{text}</span>
-    }
-    const option = caseSensitive ? "g" : "gi"
-    const regex = new RegExp(`(${escapeRegExp(highlight)})`, option)
-    const parts = text.split(regex)
-    return (
-        <span>
-            {parts.filter(part => part).map((part, i) => (
-                regex.test(part) ? <mark key={i}>{part}</mark> : <span key={i}>{part}</span>
-            ))}
-        </span>
-    )
-}
 
 
 
@@ -215,18 +205,16 @@ export const joinHier = (node, sep = '/') => {
 
 
 export const setHistoryState = (node, hash = "") => {
-    if (window.location.protocol !== "file:") {
 
-        window.history.pushState(
-            {
-                node,
-                type: "tab"
-            },
-            "",
-            `/${joinHier(node)}${hash}`,
-        )
-        // if (hash) window.location.replace(hash)  // trigger css :target
-    }
+    window.history.pushState(
+        {
+            node,
+            type: "tab"
+        },
+        "",
+        `${HOMEPAGE}/${joinHier(node)}${hash}`,
+    )
+    // if (hash) window.location.replace(hash)  // trigger css :target
 }
 
 export function* iterGetParents(node) {

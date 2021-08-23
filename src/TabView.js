@@ -10,7 +10,7 @@ import Close from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
 import { useTab } from './TabContext';
 import RegView from './RegView';
-import { joinHier, scrollTo, setHistoryState } from './utils';
+import { joinHier, scrollToID, setHistoryState } from './utils';
 
 const TabPanel = (props) => {
   const { children, value, index, ...other } = props;
@@ -157,7 +157,7 @@ const TabView = (props) => {
 
   useEffect(() => {
     if (tabState.target) {
-      scrollTo(tabState.currentTab, tabState.target, { block: "center" })
+      scrollToID(tabState.currentTab, tabState.target, { block: "center" })
     }
     else if (tabState.currentTab) {
       const regID = joinHier(tabState.currentTab)

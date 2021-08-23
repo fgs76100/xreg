@@ -76,7 +76,7 @@ function App() {
         }
         setTree(setParent(root))
       } catch (error) {
-        alert("Error: failed to parse the excel")
+        alert(`Error: failed to parse the file ${file.name}`)
       }
     }
     fileReader.readAsBinaryString(file)
@@ -99,7 +99,8 @@ function App() {
             // main: prefersDarkMode ? "#f48fb1" : "#3f51b5" // nice too
           },
           secondary: {
-            main: prefersDarkMode ? red['A100'] : "#f50057"
+            main: prefersDarkMode ? red['A100'] : "#f50057",
+            dark: prefersDarkMode ? "#387002" : "#c51162",
           }
         },
       }),

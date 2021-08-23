@@ -1,5 +1,5 @@
 import React from 'react'
-import { setHistoryState } from './utils';
+import { setHistoryState, HOMEPAGE } from './utils';
 
 const NO_SELECT = false;
 const TabContext = React.createContext(null)
@@ -46,9 +46,7 @@ function tabReducer(state, action) {
                     currentTabID = NO_SELECT;
                     currentTab = undefined;
 
-                    if (window.location.protocol !== "file:") {
-                        window.history.pushState(null, "", "/");
-                    }
+                    window.history.pushState(null, "", `${HOMEPAGE}/`);
                 } else {
                     currentTabID = state.currentTabID;
                     currentTab = tab;
