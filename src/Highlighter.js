@@ -6,7 +6,9 @@ var escapeRegExp = require('lodash.escaperegexp');
 
 const useStyles = makeStyles((theme) => ({
     mark: {
-        backgroundColor: theme.palette.secondary.dark
+        backgroundColor: theme.palette.type === "light" ?
+            theme.palette.primary.light :
+            theme.palette.primary.dark
     },
 }))
 

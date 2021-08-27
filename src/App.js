@@ -13,7 +13,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { setParent } from './utils';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
-import { green, red, } from '@material-ui/core/colors';
+import { green, red, blue } from '@material-ui/core/colors';
 
 const useStyles = makeStyles(theme => ({
   // root: {
@@ -95,12 +95,14 @@ function App() {
         palette: {
           type: prefersDarkMode ? 'dark' : 'light',
           primary: {
-            main: prefersDarkMode ? green[200] : "#3f51b5"
+            light: blue[100],
+            main: prefersDarkMode ? green[200] : "#3f51b5",
+            dark: "#387002"
             // main: prefersDarkMode ? "#f48fb1" : "#3f51b5" // nice too
           },
           secondary: {
             main: prefersDarkMode ? red['A100'] : "#f50057",
-            dark: prefersDarkMode ? "#387002" : "#c51162",
+            dark: prefersDarkMode ? "#387002" : blue[100],
           }
         },
       }),

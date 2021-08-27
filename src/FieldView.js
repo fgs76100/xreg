@@ -13,14 +13,16 @@ import Box from '@material-ui/core/Box';
 import InputBase from '@material-ui/core/InputBase';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from '@material-ui/core/IconButton';
+import AutorenewIcon from '@material-ui/icons/Autorenew';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import { memo, useCallback, useRef, useState, forwardRef } from "react";
+import { memo, useCallback, useRef, useState, forwardRef, useMemo, useEffect, } from "react";
 import {
     debounce, scrollToID, BITS, RESET, RegValue, HEX, DECIMAL,
     NAME, DESC, ACCESS, RESERVED, createID
 } from './utils';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import Highlighter from "./Highlighter";
+// import Tooltip from '@material-ui/core/Tooltip';
 
 const ENCODER = "-1"
 
@@ -47,7 +49,7 @@ const FieldsDesc = memo(({ regID, fields }) => {
         <Box mt={3} className={classes.desc} >
             <Typography
                 variant="h5"
-                id={`${regID}-${field[NAME]}-${field[BITS]}-desc`}
+                id={`${regID}-${field[NAME]}-${field[BITS]}-${NAME}`}
                 className={classes.anchor}
                 gutterBottom
             >
@@ -57,15 +59,17 @@ const FieldsDesc = memo(({ regID, fields }) => {
                 color="textSecondary"
             >
                 Access: {field[ACCESS]}, Default: {field[RESET]}
-                {/* <Highlighter text={
-                    `Access: ${field[ACCESS]}, Default: ${field[RESET]}`
-                } highlight={highlight} /> */}
             </Typography>
+
             {field[DESC] && <Box
+
+                id={`${regID}-${field[NAME]}-${field[BITS]}-${DESC}`}
                 fontSize="body1.fontSize"
                 whiteSpace="pre-wrap"
             >
-                <Highlighter text={field[DESC]} />
+                <Highlighter
+
+                    text={field[DESC]} />
             </Box>}
         </Box>
     )
@@ -84,74 +88,140 @@ const FieldsDesc = memo(({ regID, fields }) => {
 const useDecoderStyles = makeStyles((theme) => ({
     decoderRoot: {
         display: "inline-flex",
-        width: "20ch",
+        width: "22ch",
         flexWrap: "nowrap",
         backgroundColor: theme.palette.action.focus,
+        "& .changed": {
+            backgroundColor: theme.palette.type === "light" ?
+                theme.palette.primary.light :
+                theme.palette.primary.dark
+        },
+        "& .refrehButton": {
+            visibility: "hidden",
+        },
+        "&:hover .refrehButton": {
+            visibility: "visible",
+        },
     },
-    refreshIcon: {
+    icon: {
         fontSize: "1.0rem",
     },
+    error: {
+        backgroundColor: theme.palette.type === "light" ?
+            theme.palette.error.light :
+            theme.palette.error.dark,
+    }
 }))
 
 
-const FieldDecoder = forwardRef((props, ref) => {
-    const { onChange, defaultValue, inputRef, bits, id } = props
+const DecToHex = (value) => {
+    return `0x${parseInt(value).toString(16).toUpperCase()}`
+}
+
+const FORCE = 1
+
+const FieldDecoder = forwardRef((
+    { onChange, defaultValue, inputRef, bits, id, reset, autoUpdate }, ref) => {
+    console.log('123')
+    const bitWidth = useMemo(() => {
+        if (bits === ENCODER) return 32
+        return [...RegValue.iterEachBit(bits)].length
+    }, [bits])
+
     const classes = useDecoderStyles()
     const [format, setFormat] = useState(HEX)
-    const [showTool, setShowTool] = useState(false)
-
+    const [error, setError] = useState(false)
+    const PreviousFormat = useRef(format)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    const debounceOnChange = useCallback(debounce(onChange, 400), [onChange])
-
+    const debounceOnChange = useCallback(debounce(onChange, 200), [onChange])
     const isHex = format === HEX
+    const handleChange = (e, force = 0) => {
+
+        let value = e.target.value.toUpperCase()
+        let test = parseInt(value, isHex ? 16 : 10)
+        if (isNaN(test)) {
+            setError(true)
+        } else if (test.toString(2).length > bitWidth) {
+            setError(true)
+        }
+        else {
+            setError(false)
+        }
+        if (autoUpdate) debounceOnChange(force, id, value, bits)
+    }
+
+    useEffect(() => {
+        // avoid race condition
+        // if onChange invoke in the "formtOnClick",
+        // there will be a race condition between setFormat and handleChange
+        // So, here use "useEffect" to guarantee fomat has changed
+        // then trigger handleChange
+        if (PreviousFormat.current !== format)
+            onChange(FORCE, id, undefined, bits, format)
+    }, [format, id, bits, onChange])
+
     const formatOnClick = () => {
+        PreviousFormat.current = format
         let nexFomrat = isHex ? DECIMAL : HEX
         setFormat(nexFomrat)
-        onChange(id, undefined, bits, nexFomrat)
     }
+
     const handleKeyDown = (e) => {
+        if (e.keyCode === 13) {
+            // enter key
+            onChange(0, id, e.target.value, bits, format)
+        }
         if (e.ctrlKey && e.key === 'a') {
             // increment by 1
             e.preventDefault()
             let value = parseInt(e.target.value, isHex ? 16 : 10) + 1
-            value = value.toString(isHex ? 16 : 10)
-            onChange(id, value, bits, format)
+            if (isNaN(value)) value = 0
+            value = isHex ? DecToHex(value) : value.toString()
+            onChange(FORCE, id, value, bits, format)
         }
         if (e.ctrlKey && e.key === 'x') {
             // decrement by 1
             e.preventDefault()
             let value = parseInt(e.target.value, isHex ? 16 : 10) - 1
-            value = value.toString(isHex ? 16 : 10)
-            onChange(id, value, bits, format)
+            if (value < 0) { value = (2 ** bitWidth) - 1 }
+            if (isNaN(value)) value = 0
+            value = isHex ? DecToHex(value) : value.toString()
+            onChange(FORCE, id, value, bits, format)
         }
     }
+
+    const handleRest = () => {
+        onChange(FORCE, id, reset, bits, format)
+    }
+
     return (
         <span
             ref={ref}
-            onMouseEnter={() => setShowTool(true)}
-            onMouseLeave={() => setShowTool(false)}
             className={classes.decoderRoot}>
             <InputBase
+                error={error}
                 inputRef={inputRef}
                 defaultValue={defaultValue}
-                onChange={(e) => debounceOnChange(id, e.target.value, bits)}
+                onChange={handleChange}
                 onKeyDown={handleKeyDown}
                 className={classes.decoder}
                 inputProps={{
                     format,
                 }}
-                // placeholder="Decoder"
+                classes={{
+                    error: classes.error
+                }}
                 startAdornment={
                     <InputAdornment position="start"
                     >
                         <IconButton
-                            style={{ visibility: showTool ? "visible" : "hidden" }}
+                            className="refrehButton"
                             size="small"
-                            onClick={() => onChange(id, defaultValue, bits)}
+                            onClick={handleRest}
                         >
                             <RefreshIcon
                                 size="small"
-                                className={classes.refreshIcon}
+                                className={classes.icon}
                             />
                         </IconButton>
                     </InputAdornment>
@@ -161,7 +231,7 @@ const FieldDecoder = forwardRef((props, ref) => {
                         <IconButton
                             size="small"
                             onClick={formatOnClick}
-                            className={classes.refreshIcon}
+                            className={classes.icon}
                         >
                             {format}
                         </IconButton>
@@ -202,51 +272,22 @@ const FieldTableRow = ({ regID, parent, field, children }) => {
     )
 }
 
-const FieldTable = ({ Head, Cell, parent, fields }) => {
-    return (
-        <TableContainer component={Paper} style={{ maxHeight: "450px" }}>
-            <Table
-                aria-label="simple table" size="small"
-                padding="normal"
-                stickyHeader={true}
-            >
-                <TableHead>
-                    <TableRow>
-                        {headers.map((header) => (
-                            <TableCell key={header}>{header}</TableCell>)
-                        )}
-                        {Head?.()}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {fields.map((field) => (
-                        <FieldTableRow
-                            regID={parent.id}
-                            parent={parent}
-                            key={field[BITS]} field={field}
-                        >
-                            {Cell?.(field)}
-                        </FieldTableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer >
-    )
-}
-
-
-const FieldView = ({ parent, fields, bitWidth }) => {
+const FieldTable = ({ parent, fields, bitWidth }) => {
     let id = `${parent.id}-${createID()}`
+    const [forceUpdate, setForceUpdate] = useState(0)
+    const [autoUpdate, setAutoUpdate] = useState(true)
     const decoderRef = useRef({ [id]: [], })
     const regValueRef = useRef({
         [id]: new RegValue(bitWidth ?? 32, fields)
     })
-
-    const onChange = useCallback((id, value, key, format) => {
+    const onChange = useCallback((force, id, value, key, format) => {
         if (value !== undefined && typeof value !== "string") {
             throw Error(
                 `expecting value is a string type, got ${typeof value}(${value}) instead`
             )
+        }
+        if (value && value.toLowerCase() === "0x") {
+            value += "0"
         }
         const ref = decoderRef.current[id]
         const valueFormat = format || ref[key].attributes.format.value;
@@ -254,46 +295,71 @@ const FieldView = ({ parent, fields, bitWidth }) => {
         if (key === ENCODER) {
             // the encoder update
             regValue.setValue(value, valueFormat)
-            ref[ENCODER].value = regValue.getValue(valueFormat)
-            // when encoder updated, all decoders must update too
-            for (const bits in ref) {
-                if (Object.hasOwnProperty.call(ref, bits)) {
-                    if (bits === ENCODER) continue
-                    let fieldFormat = ref[bits].attributes.format.value;
-                    ref[bits].value = regValue.getValueByBits(bits, fieldFormat)
+            value = regValue.getValue(valueFormat)
+            if (force) {
+                // ref[ENCODER].value = value
+                // https://stackoverflow.com/questions/16195644/in-chrome-undo-does-not-work-properly-for-input-element-after-contents-changed-p
+                let tmp = ref[ENCODER].value
+                ref[ENCODER].selectionStart = 0
+                ref[ENCODER].selectionEnd = tmp.length
+                ref[ENCODER].focus()
+                // this will trigger onChange event from the input
+                document.execCommand("insertText", false, value)
+            } else {
+                // ref[ENCODER].value = value
+                // console.log(value)
+                // when encoder updated, all decoders must update too
+                for (const bits in ref) {
+                    if (Object.hasOwnProperty.call(ref, bits)) {
+                        if (bits === ENCODER) continue
+                        ref[bits].parentElement.classList.remove("changed")
+                        let fieldFormat = ref[bits].attributes.format.value;
+                        const isHex = fieldFormat === HEX
+                        let oldValue = parseInt(ref[bits].value, isHex ? 16 : 10)
+                        ref[bits].value = regValue.getValueByBits(bits, fieldFormat)
+                        if (oldValue !== parseInt(ref[bits].value, isHex ? 16 : 10)) {
+                            if (!force) ref[bits].parentElement.classList.add("changed")
+                        }
+                    }
                 }
             }
         } else {
             // one of decoders update
             let bits = key
             regValue.setValueByBits(bits, value, valueFormat)
-            ref[key].value = regValue.getValueByBits(bits, valueFormat)
+            if (force) {
+                value = regValue.getValueByBits(bits, valueFormat)
+
+                let tmp = ref[key].value
+                ref[key].selectionStart = 0
+                ref[key].selectionEnd = tmp.length
+                ref[key].focus()
+                document.execCommand("insertText", false, value)
+            }
             // when decoder update, the encoder must update too
             let encoderFormat = ref[ENCODER].attributes.format.value;
             ref[ENCODER].value = regValue.getValue(encoderFormat)
         }
     }, [])
 
-    const [forceUpdate, setForceUpdate] = useState(0)
-
-    if (!fields) return null
-
-    const Heads = () => {
+    const Encoders = () => {
         return Object.keys(decoderRef.current).map((id) => (
             <TableCell
                 key={id.toString()} >
                 <FieldDecoder
                     inputRef={el => decoderRef.current[id][ENCODER] = el}
-                    defaultValue={regValueRef.current[id].getDefaultValue()}
+                    defaultValue={regValueRef.current[id].getValue()}
                     onChange={onChange}
                     bits={ENCODER}
                     id={id}
+                    autoUpdate={autoUpdate}
+                    reset={regValueRef.current[id].getDefaultValue()}
                 />
             </TableCell >
         ))
     }
 
-    const Cells = (field) => {
+    const Decoders = ({ field }) => {
         return Object.keys(decoderRef.current).map((id) => (
             <TableCell
                 key={`${id}-${field[BITS]}-${field[NAME]}`}
@@ -304,6 +370,8 @@ const FieldView = ({ parent, fields, bitWidth }) => {
                     onChange={onChange}
                     bits={field[BITS]}
                     id={id}
+                    autoUpdate={autoUpdate}
+                    reset={DecToHex(parseInt(field[RESET]))}
                 />
             </TableCell>
         ))
@@ -317,15 +385,66 @@ const FieldView = ({ parent, fields, bitWidth }) => {
     }
 
     return (
-        <Box>
+        <>
             <Box display="flex" justifyContent="flex-end">
-                <IconButton size="small" color="primary"
+                {/* <Tooltip
+                    placement="top"
+                    title={`Auto Update`}> */}
+                <IconButton size="small"
+                    disableRipple
+                    disableFocusRipple
+                    disableTouchRipple
+                    onClick={() => setAutoUpdate(!autoUpdate)}
+                    style={{ opacity: autoUpdate ? 1 : 0.3 }}>
+                    <AutorenewIcon />
+                </IconButton>
+                {/* </Tooltip> */}
+                <IconButton size="small"
+                    disableRipple
+                    disableFocusRipple
+                    disableTouchRipple
                     onClick={addDecoder}
                 >
                     <AddBoxIcon />
                 </IconButton>
             </Box>
-            <FieldTable Head={Heads} Cell={Cells} parent={parent} fields={fields} />
+            <TableContainer component={Paper} style={{ maxHeight: "450px" }}>
+                <Table
+                    aria-label="simple table" size="small"
+                    padding="normal"
+                    stickyHeader={true}
+                >
+                    <TableHead>
+                        <TableRow>
+                            {headers.map((header) => (
+                                <TableCell key={header}>{header}</TableCell>)
+                            )}
+                            <Encoders />
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {fields.map((field) => (
+                            <FieldTableRow
+                                regID={parent.id}
+                                parent={parent}
+                                key={field[BITS]} field={field}
+                            >
+                                <Decoders field={field} />
+                            </FieldTableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer >
+        </>
+    )
+}
+
+
+const FieldView = ({ parent, fields, bitWidth }) => {
+    if (!fields) return null
+    return (
+        <Box>
+            <FieldTable parent={parent} fields={fields} bitWidth={bitWidth} />
             <FieldsDesc regID={parent.id} fields={fields} />
         </Box>
     )

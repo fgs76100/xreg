@@ -173,7 +173,7 @@ function* iterLeaf(node, query, showParent = true, parent = null) {
                             text: value,
                             id: `${node.id}_${createID()}`,
                             ptr: node,
-                            fieldID: `${node.id}-${field[NAME]}-${field[BITS]}-desc`
+                            fieldID: `${node.id}-${field[NAME]}-${field[BITS]}-${index}`
                         })
                     }
                 }
