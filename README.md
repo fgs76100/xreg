@@ -2,7 +2,7 @@
 
 The purpose of this project is to create a documentation HTML for register files
 
-[An example Webstie](https://github.com/fgs76100/RegisterDashboard)
+[An example Webstie](https://fgs76100.github.io/RegisterDashboard/)
 
 
 ## Command lines
